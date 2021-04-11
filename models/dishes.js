@@ -1,6 +1,5 @@
 // importar mongoose
 const mongoose = require('mongoose');
-const Dishes = require('./dishes');
 
 // crear una variable de tipo esquema
 const Schema =  mongoose.Schema;
@@ -45,3 +44,7 @@ var dishSchema = new Schema({
 }, {
     timestamps: true
 });
+
+let Dishes = mongoose.model('Dishe',dishSchema)
+
+module.exports = Dishes;
