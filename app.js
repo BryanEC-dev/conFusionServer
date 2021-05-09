@@ -19,6 +19,14 @@ var promoRouter = require('./routes/promoRouter');
 var app = express();
 
 
+
+// passport 
+var passport = require('passport');
+var authenticate = require('./authenticate');
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 // conexión a la base de datos
 const url = 'mongodb://localhost:27017/conFusionServer';
 const connect = mongoose.connect(url);
@@ -53,7 +61,22 @@ app.use(session({
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
+
+
 function auth (req, res, next) {
+  console.log(req.user);
+
+  if (!req.user) {
+    var err = new Error('You are not authenticated!');
+    err.status = 403;
+    next(err);
+  }
+  else {
+        next();
+  }
+}
+
+/* function auth (req, res, next) {
 
   console.log(req.session);
 
@@ -72,7 +95,7 @@ function auth (req, res, next) {
       return next(err);
     }
   }
-}
+} */
 
 
 
