@@ -1,3 +1,4 @@
+var config = require('./config');
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -25,10 +26,10 @@ var passport = require('passport');
 var authenticate = require('./authenticate');
 
 app.use(passport.initialize());
-app.use(passport.session());
+/* app.use(passport.session()); */
 
 // conexión a la base de datos
-const url = 'mongodb://localhost:27017/conFusionServer';
+const url = config.mongoUrl;
 const connect = mongoose.connect(url);
 
 connect.then((db) => {
@@ -50,20 +51,20 @@ app.use(express.urlencoded({ extended: false }));
     // suministrar clave secreta para cifrar la cookie
 //app.use(cookieParser('12345-67890-09876-54321'));
 
-app.use(session({
+/* app.use(session({
   name: 'session-id',
   secret: '12345-67890-09876-54321',
   saveUninitialized: false,
   resave: false,
   store: new FileStore()
-}));
+})); */
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
 
 
-function auth (req, res, next) {
+/* function auth (req, res, next) {
   console.log(req.user);
 
   if (!req.user) {
@@ -74,7 +75,7 @@ function auth (req, res, next) {
   else {
         next();
   }
-}
+} */
 
 /* function auth (req, res, next) {
 
@@ -103,7 +104,7 @@ function auth (req, res, next) {
 
 
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(auth);
+//app.use(auth);
 
 app.use('/dishes', dishRouter);
 app.use('/promotions', promoRouter);
