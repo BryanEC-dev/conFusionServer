@@ -14,7 +14,7 @@ var User = require('./models/user');
 // como en el modelo ya declaramos passport-local-mongoose y utilizamos como plugin 
 //  el modelo ya cuenta como metodos propios de la librería como User.authenticate()
 // el cual se base en la estrategia de auntenticación de usuario y contraseña
-//passport.use(new LocalStrategy(User.authenticate()));
+passport.use(new LocalStrategy(User.authenticate()));
 
 //TODO
 // use static serialize and deserialize of model for passport session support
