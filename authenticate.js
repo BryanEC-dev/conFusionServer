@@ -14,7 +14,7 @@ var User = require('./models/user');
 // como en el modelo ya declaramos passport-local-mongoose y utilizamos como plugin 
 //  el modelo ya cuenta como metodos propios de la librería como User.authenticate()
 // el cual se base en la estrategia de auntenticación de usuario y contraseña
-passport.use(new LocalStrategy(User.authenticate()));
+//passport.use(new LocalStrategy(User.authenticate()));
 
 //TODO
 // use static serialize and deserialize of model for passport session support
@@ -37,7 +37,7 @@ opts.secretOrKey = config.secretKey;
 // analiza el mensaje de la solicitud , utiliza la estrategia de autenticación y extrae la información
 exports.jwtPassport = passport.use(new JwtStrategy(opts,
     (jwt_payload, done) => {
-        console.log("JWT payload: ", jwt_payload);
+        //console.log("JWT payload: ", jwt_payload);
         User.findOne({_id: jwt_payload._id}, (err, user) => {
             if (err) {
                 return done(err, false);
@@ -52,3 +52,18 @@ exports.jwtPassport = passport.use(new JwtStrategy(opts,
     }));
 
 exports.verifyUser = passport.authenticate('jwt', {session: false});
+exports.verifyAdmin = function (req, res, next) {
+    console.log(req.user.admin);
+    if(!req.user.admin) {
+        res.statusCode = 403;
+        res.setHeader('Content-type','application/json');
+        res.json({"Message" : "Unauthorized"})
+
+        // otra forma de hacerlo
+       /*  var err = new Error('You are not authorized to perform this operation!');
+        err.status = 403;
+        return next(err); */
+    }
+    return next();
+}
+

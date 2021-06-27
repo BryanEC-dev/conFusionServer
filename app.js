@@ -15,6 +15,7 @@ var usersRouter = require('./routes/users');
 var dishRouter = require('./routes/dishRouter');
 var leaderRouter = require('./routes/leaderRouter');
 var promoRouter = require('./routes/promoRouter');
+//const uploadRouter = require('./routes/uploadRouter');
 
 // creación del servidor
 var app = express();
@@ -58,6 +59,18 @@ app.use(express.urlencoded({ extended: false }));
   resave: false,
   store: new FileStore()
 })); */
+
+// Secure traffic only
+app.all('*', (req, res, next) => {
+  if (req.secure) {
+    return next();
+  }
+  else {
+    res.redirect(307, 'https://' + req.hostname + ':' + app.get('secPort') + req.url);
+  }
+});
+
+
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
@@ -109,6 +122,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/dishes', dishRouter);
 app.use('/promotions', promoRouter);
 app.use('/leaders', leaderRouter);
+//app.use('/imageUpload',uploadRouter);
  
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

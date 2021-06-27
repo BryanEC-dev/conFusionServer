@@ -18,7 +18,7 @@ leaderRouter.route('/')
         next(err)
     })
 })
-.post(authenticate.verifyUser, (req, res) => {
+.post(authenticate.verifyUser,authenticate.verifyAdmin, (req, res) => {
    Leaders.create(req.body)
    .then( (leader) => {
        res.statusCode = 201,
@@ -30,11 +30,12 @@ leaderRouter.route('/')
        console.log(err);
    }) 
 })
-.put(authenticate.verifyUser, (req, res) => {
+.put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res) => {
     res.statusCode = 403;
-    res.end('PUT operation not supported on /leadership');
+    res.setHeader('Content-type','application/json');
+    res.json({"Message" : "PUT operation not supported on /leadership"})
 })
-.delete(authenticate.verifyUser, (req, res) => {
+.delete(authenticate.verifyUser,authenticate.verifyAdmin, (req, res) => {
     Leaders.remove()
     .then( (resp) => {
         res.statusCode = 200;
@@ -59,11 +60,11 @@ leaderRouter.route('/:leaderId')
 })
 
 
-.post(authenticate.verifyUser, (req, res) => {
+.post(authenticate.verifyUser,authenticate.verifyAdmin, (req, res) => {
     res.statusCode = 403;
     res.end('POST operation not supported on /leadership');
 })
-.put(authenticate.verifyUser, (req, res) => {
+.put(authenticate.verifyUser,authenticate.verifyAdmin, (req, res) => {
     Leaders.findByIdAndUpdate(req.params.leaderId, {
         $set: req.body
     }, {new: true})
@@ -76,7 +77,7 @@ leaderRouter.route('/:leaderId')
         console.log(err);
     })
 })
-.delete(authenticate.verifyUser, (req, res) => {
+.delete(authenticate.verifyUser,authenticate.verifyAdmin, (req, res) => {
     Leaders.findByIdAndRemove(req.params.leaderId, {
         $set: req.body
     }, {new: true})
